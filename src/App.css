@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.bg-teal-700 {
+  background-color: #00796b !important; /* Bootstrap teal-700 color */
+}

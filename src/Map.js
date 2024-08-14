@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+
 // Define country coordinates
 const countryCoordinates = {
     Israel: [31.0461, 34.8516],
@@ -17,10 +18,20 @@ const Map = () => {
     const [zoomLevel, setZoomLevel] = useState(2);
 
     useEffect(() => {
-        fetch('/')
-            .then(response => response.json())
-            .then(data => setParticipantsData(data))
-            .catch(error => console.error('Error fetching participants:', error));
+        const apiUrl = process.env.REACT_APP_API_URL;
+        console.log("Fetching participants data from:", apiUrl);
+        fetch('http://localhost:3001/api')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Fetched participants data:", data);
+            setParticipantsData(data);
+        })
+        .catch(error => console.error('Error fetching participants:', error));
     }, []);
 
     useEffect(() => {

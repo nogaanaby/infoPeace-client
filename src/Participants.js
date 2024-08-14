@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import env from './CONSTS.js';
 
 function Participants() {
   const [data,setData] = useState([]);
-  useEffect(() => {
-    axios.get('http://localhost:3001/')
-      .then(response => {
-        setData(response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  }, []);
+
+    useEffect(() => {
+        fetch(env+"/api")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Fetched participants data:", data);
+                setData(data);
+            })
+            .catch(error => console.error('Error fetching participants:', error));
+    }, []);
+
+
+
   return (
     <div className='d-flex vh-100 justify-content-center align-items-center' >
         <div className='w-50 bg-white rounded p-3'>
@@ -28,8 +38,9 @@ function Participants() {
               {data.map((person,index) => {
                 return <tr key={index}>
                   <td>{person.per_id}</td>
-                  <td>{person.cond_selection_id}</td>
-                  <td>{person.country_id}</td>
+                  <td>{person.condition_id}</td>
+                  <td>{person.country}</td>
+                  <td>{person.city}</td>
                   <td>{person.date_of_birth}</td>
                 </tr>
               })}

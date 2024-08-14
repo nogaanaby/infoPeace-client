@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import SignInForm from './SignInForm';
+import env from './CONSTS.js';
 
 // Define country coordinates
 const countryCoordinates = {
@@ -18,9 +19,7 @@ const Map = () => {
     const [zoomLevel, setZoomLevel] = useState(2);
 
     useEffect(() => {
-        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
-        console.log("Fetching participants data from:", apiUrl);
-        fetch(apiUrl)
+        fetch(env+"/api")
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -62,27 +61,7 @@ const Map = () => {
         setCountryData(aggregatedData);
     }, [zoomLevel, participantsData]);
 
-    const handleSignIn = (participant) => {
-        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(participant),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("New participant added:", data);
-                setParticipantsData([...participantsData, data]);
-            })
-            .catch(error => console.error('Error adding participant:', error));
-    };
+
 
     const createCustomIcon = (count) => {
         return L.divIcon({
@@ -105,7 +84,6 @@ const Map = () => {
 
     return (
         <div>
-            <SignInForm onSignIn={handleSignIn} />
             <MapContainer center={[31.0461, 34.8516]} zoom={6} style={{ height: '100vh', width: '100%' }}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -4,6 +4,7 @@ import React from 'react';
 import { BrowserRouter as Router,Routes, Route, Switch } from 'react-router-dom';
 import Participants from './Participants'; 
 import Map from './Map'; 
+import SignInForm from './SignInForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Header() {
@@ -21,6 +22,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Map />} />
         <Route path="/participants" element={<Participants />} />
+        <Route path="/form" element={<SignInForm />} />
       </Routes>
 
     </Router>

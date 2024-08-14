@@ -1,53 +1,74 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
-const participantsData = [
-    { id: 1, name: 'Participant 1', country: 'Israel', location: [31.0461, 34.8516] },
-    { id: 2, name: 'Participant 2', country: 'Egypt', location: [30.0444, 31.2357] },
-    { id: 3, name: 'Participant 3', country: 'Jordan', location: [31.9539, 35.9106] },
-    { id: 4, name: 'Participant 4', country: 'Israel', location: [31.0461, 34.8516] },
-    // Add more participants as needed
-];
-
+// Define country coordinates
 const countryCoordinates = {
-    'Israel': [31.0461, 34.8516],
-    'Egypt': [30.0444, 31.2357],
-    'Jordan': [31.9539, 35.9106],
+    Israel: [31.0461, 34.8516],
+    Egypt: [26.8206, 30.8025],
+    Jordan: [30.5852, 36.2384],
     // Add more countries as needed
 };
 
 const Map = () => {
+    const [participantsData, setParticipantsData] = useState([]);
     const [countryData, setCountryData] = useState({});
+    const [zoomLevel, setZoomLevel] = useState(2);
+
+    useEffect(() => {
+        fetch('/')
+            .then(response => response.json())
+            .then(data => setParticipantsData(data))
+            .catch(error => console.error('Error fetching participants:', error));
+    }, []);
 
     useEffect(() => {
         const aggregatedData = participantsData.reduce((acc, participant) => {
-            if (!acc[participant.country]) {
-                acc[participant.country] = { count: 0, location: countryCoordinates[participant.country] };
+            const key = zoomLevel > 5 ? participant.city : participant.country;
+            if (!acc[key]) {
+                acc[key] = { count: 0, location: zoomLevel > 5 ? participant.location : countryCoordinates[participant.country] };
             }
-            acc[participant.country].count += 1;
+            acc[key].count += 1;
             return acc;
         }, {});
         setCountryData(aggregatedData);
-    }, []);
+    }, [zoomLevel, participantsData]);
+
+    const createCustomIcon = (count) => {
+        return L.divIcon({
+            html: `<div style="background-color: rgba(255, 0, 0, 0.6); border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">${count}</div>`,
+            className: '', // Remove default class
+            iconSize: [30, 30], // Size of the icon
+            iconAnchor: [15, 15], // Point of the icon which will correspond to marker's location
+            popupAnchor: [0, -15], // Point from which the popup should open relative to the iconAnchor
+        });
+    };
+
+    const MapEvents = () => {
+        useMapEvents({
+            zoomend: (e) => {
+                setZoomLevel(e.target.getZoom());
+            },
+        });
+        return null;
+    };
 
     return (
-        <div>
-            <h1>Map Component</h1>
-            <MapContainer center={[31.0461, 34.8516]} zoom={6} style={{ height: '400px', width: '100%' }}>
-                <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="Map data &copy; <a href=&quot;https://www.openstreetmap.org/&quot;>OpenStreetMap</a> contributors"
-                />
-                {Object.entries(countryData).map(([country, data]) => (
-                    <Marker key={country} position={data.location}>
-                        <Popup>
-                            {country}: {data.count} participants
-                        </Popup>
-                    </Marker>
-                ))}
-            </MapContainer>
-        </div>
+        <MapContainer center={[31.0461, 34.8516]} zoom={6} style={{ height: '100vh', width: '100%' }}>
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            />
+            <MapEvents />
+            {Object.entries(countryData).map(([key, data]) => (
+                <Marker key={key} position={data.location} icon={createCustomIcon(data.count)}>
+                    <Popup>
+                        {key}: {data.count} participants
+                    </Popup>
+                </Marker>
+            ))}
+        </MapContainer>
     );
 };
 

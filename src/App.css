@@ -40,3 +40,20 @@
 .bg-teal-700 {
   background-color: #00796b !important; /* Bootstrap teal-700 color */
 }
+
+
+
+.bg-teal-700 {
+  background-color: #00796b !important;
+}
+
+.navbar-brand {
+  font-size: 1.8rem !important; /* Increased font size */
+  font-weight: bold;
+}
+
+.nav-link {
+  font-size: 1.2rem;
+  margin-right: 1rem;
+}
+

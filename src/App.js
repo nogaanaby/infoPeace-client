@@ -7,6 +7,7 @@ import Map from './Map';
 import SignInForm from './SignInForm';
 import TXTPage from './TXTPage';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ThankYou from './ThankYou';
 
 function Header() {
   return (
@@ -45,6 +46,7 @@ function App() {
         <Route path="/participants" element={<Participants />} />
         <Route path="/about" element={<TXTPage />} />
         <Route path="/form" element={<SignInForm />} />
+        <Route path="/thank-you" component={ThankYou} />
       </Routes>
 
     </Router>

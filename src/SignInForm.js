@@ -1,98 +1,123 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import env from './CONSTS.js';
+import ThankYou from './ThankYou';
+
+
+const apiKey = '6795d462851b4d1cb57608b232b67732';
 
 const SignInForm = () => {
-    const [id, setID] = useState('');
-    const [country, setCountry] = useState('');
-    const [city, setCity] = useState('');
-    const [latitude, setLatitude] = useState('');
-    const [longitude, setLongitude] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState('');
-    const [conditionId, setConditionId] = useState('');
+  const [id, setID] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [conditionId, setConditionId] = useState('');
+  const [formCompleted, setFormCompleted] = useState(false);
 
-    useEffect(() => {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              setLatitude(position.coords.latitude);
-              setLongitude(position.coords.longitude);
-            },
-            (error) => {
-              console.error("Error getting geolocation: ", error);
-            }
-          );
-        } else {
-          console.error("Geolocation is not supported by this browser.");
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          setLatitude(lat);
+          setLongitude(lon);
+          fetch(`https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=${apiKey}`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.results && data.results.length > 0) {
+                const location = data.results[0].components;
+                setCountry(location.country);
+                setCity(location.city || location.town || location.village);
+              }
+            })
+            .catch(error => console.error("Error with reverse geocoding: ", error));
+        },
+        (error) => {
+          console.error("Error getting geolocation: ", error);
         }
-      }, []);
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const location = {
-            type: 'Point',
-            coordinates: [parseFloat(latitude), parseFloat(longitude)]
-        };
-        const participant = { id, country, city, location, dateOfBirth, condition_id: conditionId };
-        console.log("Submitting participant:", participant); // Debugging line
-        handleSignIn(participant);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const location = {
+      type: 'Point',
+      coordinates: [parseFloat(latitude), parseFloat(longitude)]
     };
+    const participant = { id, country, city, location, dateOfBirth, condition_id: conditionId };
+    console.log("Submitting participant:", participant); // Debugging line
+    handleSignIn(participant);
+  };
 
-    const handleSignIn = (participant) => {
-        fetch(env+'/form', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(participant),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log("New participant added:", data);
-        })
-        .catch(error => console.error('Error adding participant:', error));
-    };
+  const handleSignIn = (participant) => {
+    fetch(env + '/form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(participant),
+    })
+      .then(response => response.json())
+      .then(data => {
+        setFormCompleted(true);
+        console.log("Response from server:", data);
+  
+      })
+      .catch(error => {
+        console.error("Error submitting form: ", error);
+      });
+  };
 
-    return (
-    <form onSubmit={handleSubmit} className="container mt-5">
+
+  if (formCompleted) {
+    return <ThankYou />;
+  }
+
+
+  return (
+    <div className="container mt-5">
+      <form onSubmit={handleSubmit}>
         <div className="mb-3">
-            <label htmlFor="id" className="form-label">ID:</label>
-            <input type="text" className="form-control" id="id" value={id} onChange={(e) => setID(e.target.value)} required />
+          <label htmlFor="id" className="form-label">ID:</label>
+          <input type="text" className="form-control" id="id" value={id} onChange={(e) => setID(e.target.value)} required />
         </div>
         <div className="mb-3">
-            <label htmlFor="country" className="form-label">Country:</label>
-            <input type="text" className="form-control" id="country" value={country} onChange={(e) => setCountry(e.target.value)} required />
+          <label htmlFor="country" className="form-label">Country:</label>
+          <input type="text" className="form-control" id="country" value={country} readOnly />
         </div>
         <div className="mb-3">
-            <label htmlFor="city" className="form-label">City:</label>
-            <input type="text" className="form-control" id="city" value={city} onChange={(e) => setCity(e.target.value)} required />
+          <label htmlFor="city" className="form-label">City:</label>
+          <input type="text" className="form-control" id="city" value={city} readOnly />
         </div>
         <div className="mb-3">
-            <label htmlFor="latitude" className="form-label">Latitude:</label>
-            <input type="text" className="form-control" id="latitude" value={latitude} onChange={(e) => setLatitude(e.target.value)} required />
+          <label htmlFor="latitude" className="form-label">Latitude:</label>
+          <input type="text" className="form-control" id="latitude" value={latitude} readOnly />
         </div>
         <div className="mb-3">
-            <label htmlFor="longitude" className="form-label">Longitude:</label>
-            <input type="text" className="form-control" id="longitude" value={longitude} onChange={(e) => setLongitude(e.target.value)} required />
+          <label htmlFor="longitude" className="form-label">Longitude:</label>
+          <input type="text" className="form-control" id="longitude" value={longitude} readOnly />
         </div>
         <div className="mb-3">
-            <label htmlFor="dateOfBirth" className="form-label">Date of Birth:</label>
-            <input type="date" className="form-control" id="dateOfBirth" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required />
+          <label htmlFor="dateOfBirth" className="form-label">Date of Birth:</label>
+          <input type="date" className="form-control" id="dateOfBirth" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required />
         </div>
         <div className="mb-3">
-            <label htmlFor="conditionId" className="form-label">Condition:</label>
-            <select className="form-select" id="conditionId" value={conditionId} onChange={(e) => setConditionId(e.target.value)} required>
+          <label htmlFor="conditionId" className="form-label">Condition:</label>
+          <select className="form-select" id="conditionId" value={conditionId} onChange={(e) => setConditionId(e.target.value)} required>
             <option value="">Select an option</option>
             <option value="1">Option 1</option>
             <option value="2">Option 2</option>
             <option value="3">Option 3</option>
-            </select>
+          </select>
         </div>
         <button type="submit" className="btn btn-primary">Sign In</button>
-    </form>
-    );
-};
+      </form>
+    </div>
+  );
+}
 
 export default SignInForm;

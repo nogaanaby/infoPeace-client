@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import env from './CONSTS.js';
 
 const SignInForm = () => {
@@ -9,6 +9,22 @@ const SignInForm = () => {
     const [longitude, setLongitude] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [conditionId, setConditionId] = useState('');
+
+    useEffect(() => {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              setLatitude(position.coords.latitude);
+              setLongitude(position.coords.longitude);
+            },
+            (error) => {
+              console.error("Error getting geolocation: ", error);
+            }
+          );
+        } else {
+          console.error("Geolocation is not supported by this browser.");
+        }
+      }, []);
 
     const handleSubmit = (e) => {
         e.preventDefault();

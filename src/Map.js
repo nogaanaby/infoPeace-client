@@ -17,6 +17,7 @@ const Map = () => {
     const [participantsData, setParticipantsData] = useState([]);
     const [countryData, setCountryData] = useState({});
     const [zoomLevel, setZoomLevel] = useState(2);
+    const [selectedCondition, setSelectedCondition] = useState('');
 
     useEffect(() => {
         fetch(env+"/api")
@@ -45,6 +46,11 @@ const Map = () => {
                 return acc;
             }
 
+            // Filter participants based on selected condition
+            if (selectedCondition && participant.condition_id !== parseInt(selectedCondition, 10)) {
+                return acc;
+            }
+
             if (!acc[key]) {
 
                 acc[key] = { count: 0, location: zoomLevel > 5 ? participant.location.coordinates : countryCoordinates[participant.country] };
@@ -59,7 +65,7 @@ const Map = () => {
         console.log("Zoom Level:", zoomLevel);
 
         setCountryData(aggregatedData);
-    }, [zoomLevel, participantsData]);
+    }, [zoomLevel, participantsData,selectedCondition]);
 
 
 
@@ -84,6 +90,17 @@ const Map = () => {
 
     return (
         <div>
+            <div class="container-sm ">
+            <div className="filter-container mb-3">
+                <label htmlFor="conditionFilter" className="form-label">Filter by Condition:</label>
+                <select id="conditionFilter" className="form-select" value={selectedCondition} onChange={(e) => setSelectedCondition(e.target.value)}>
+                    <option value="">All</option>
+                    <option value="0">Level 1: Green-Line bounderies, Palastnian indepandance</option>
+                    <option value="1">Level 2: I belive Israel and Palestine should be the same country for all nationalities and combined democracy</option>
+                    <option value="2">Level 3: I dont care as long as there`s no more wars</option>
+                </select>
+            </div>
+            </div>
             <MapContainer center={[31.0461, 34.8516]} zoom={6} style={{ height: '100vh', width: '100%' }}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

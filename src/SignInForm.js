@@ -80,43 +80,41 @@ const SignInForm = () => {
 
   return (
     <div className="container mt-5">
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="id" className="form-label">ID:</label>
-          <input type="text" className="form-control" id="id" value={id} onChange={(e) => setID(e.target.value)} required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="country" className="form-label">Country:</label>
-          <input type="text" className="form-control" id="country" value={country} readOnly />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="city" className="form-label">City:</label>
-          <input type="text" className="form-control" id="city" value={city} readOnly />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="latitude" className="form-label">Latitude:</label>
-          <input type="text" className="form-control" id="latitude" value={latitude} readOnly />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="longitude" className="form-label">Longitude:</label>
-          <input type="text" className="form-control" id="longitude" value={longitude} readOnly />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="dateOfBirth" className="form-label">Date of Birth:</label>
-          <input type="date" className="form-control" id="dateOfBirth" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} required />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="conditionId" className="form-label">Condition:</label>
-          <select className="form-select" id="conditionId" value={conditionId} onChange={(e) => setConditionId(e.target.value)} required>
-            <option value="">Select an option</option>
-            <option value="1">Option 1</option>
-            <option value="2">Option 2</option>
-            <option value="3">Option 3</option>
-          </select>
-        </div>
-        <button type="submit" className="btn btn-primary">Sign In</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label htmlFor="id" className="form-label">ID:</label>
+        <input type="text" className="form-control" id="id" value={id} onChange={(e) => setID(e.target.value)} required />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="country" className="form-label">Country:</label>
+        <input type="text" className="form-control" id="country" value={country} readOnly />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="city" className="form-label">City:</label>
+        <input type="text" className="form-control" id="city" value={city} readOnly />
+      </div>
+      <input type="hidden" id="latitude" value={latitude} />
+      <input type="hidden" id="longitude" value={longitude} />
+      <div className="mb-3">
+        <label htmlFor="dateOfBirth" className="form-label">Date of Birth:</label>
+        <input type="date" className="form-control" id="dateOfBirth" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="conditionId" className="form-label">I support peace in the middle east throught the following terms:</label>
+        <select className="form-select" id="conditionId" value={conditionId} onChange={(e) => setConditionId(e.target.value)} required>
+          <option value="">Select an option</option>
+          <option value="1">Level 1: Green-Line bounderies, Palastnian indepandance</option>
+          <option value="2">Level 2: I belive Israel and Palestine should be the same country for all nationalities and combined democracy</option>
+          <option value="3">Level 3: I dont care as long as there`s no more wars</option>
+        </select>
+      </div>
+      <div className="mb-3 form-check">
+        <input type="checkbox" className="form-check-input" id="consent" required />
+        <label className="form-check-label" htmlFor="consent">I consent to the collection of my location data</label>
+      </div>
+      <button type="submit" className="btn btn-primary">Sign In</button>
+    </form>
+  </div>
   );
 }
 

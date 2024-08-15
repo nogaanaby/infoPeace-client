@@ -5,14 +5,22 @@ import 'leaflet/dist/leaflet.css';
 import SignInForm from './SignInForm';
 import env from './CONSTS.js';
 
-// Define country coordinates
 const countryCoordinates = {
     Israel: [31.0461, 34.8516],
     Egypt: [26.8206, 30.8025],
     Jordan: [30.5852, 36.2384],
-    // Add more countries as needed
+    Lebanon: [33.8547, 35.8623],
+    Syria: [34.8021, 38.9968],
+    Iraq: [33.2232, 43.6793],
+    Saudi_Arabia: [23.8859, 45.0792],
+    United_Arab_Emirates: [23.4241, 53.8478],
+    Qatar: [25.3548, 51.1839],
+    Kuwait: [29.3117, 47.4818],
+    Bahrain: [26.0667, 50.5577],
+    Oman: [21.4735, 55.9754],
+    Yemen: [15.5527, 48.5164],
+    Palestine: [31.9474, 35.2272],
 };
-
 const Map = () => {
     const [participantsData, setParticipantsData] = useState([]);
     const [countryData, setCountryData] = useState({});

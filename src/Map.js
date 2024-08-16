@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import SignInForm from './SignInForm';
-import env from './CONSTS.js';
+
 
 const countryCoordinates = {
     Israel: [31.0461, 34.8516],
@@ -28,8 +28,9 @@ const Map = () => {
     const [selectedCondition, setSelectedCondition] = useState('');
 
     useEffect(() => {
-        fetch(env+"/api")
+        fetch(`${process.env.REACT_APP_API_URL}/api`)
             .then(response => {
+                console.log("REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }

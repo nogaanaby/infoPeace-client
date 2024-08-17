@@ -15,6 +15,7 @@ const SignInForm = () => {
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [conditionId, setConditionId] = useState('');
   const [formCompleted, setFormCompleted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -56,6 +57,7 @@ const SignInForm = () => {
   };
 
   const handleSignIn = (participant) => {
+    setLoading(true);
     fetch(`${env}/form`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -63,12 +65,15 @@ const SignInForm = () => {
     })
       .then(response => response.json())
       .then(data => {
+        setLoading(false);
         setFormCompleted(true);
         console.log("Response from server:", data);
   
       })
       .catch(error => {
         console.error("Error submitting form: ", error);
+        setLoading(false);
+        return <h1>I am sorry there has been an error</h1>;
       });
   };
 
@@ -80,6 +85,15 @@ const SignInForm = () => {
 
   return (
     <div className="container mt-5">
+
+    {loading ? (
+          <div className="d-flex justify-content-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
+          </div>
+        ) : (
+
     <form onSubmit={handleSubmit}>
       <div className="mb-3">
         <label htmlFor="id" className="form-label">ID:</label>
@@ -113,7 +127,7 @@ const SignInForm = () => {
         <label className="form-check-label" htmlFor="consent">I consent to the collection of my location data</label>
       </div>
       <button type="submit" className="btn btn-primary">Sign In</button>
-    </form>
+    </form>)}
   </div>
   );
 }

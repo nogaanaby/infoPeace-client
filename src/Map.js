@@ -26,6 +26,7 @@ const Map = () => {
     const [countryData, setCountryData] = useState({});
     const [zoomLevel, setZoomLevel] = useState(2);
     const [selectedCondition, setSelectedCondition] = useState('');
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetch(`${env}/api`)
@@ -38,8 +39,12 @@ const Map = () => {
             .then(data => {
                 console.log("Fetched participants data:", data);
                 setParticipantsData(data);
+                setLoading(false);
             })
-            .catch(error => console.error('Error fetching participants:', error));
+            .catch(error => {
+                console.error('Error fetching participants:', error);
+                setLoading(false);
+              });
     }, []);
 
     useEffect(() => {
@@ -109,6 +114,15 @@ const Map = () => {
                 </select>
             </div>
             </div>
+
+            {loading ? (
+          <div className="d-flex justify-content-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
+          </div>
+        ) : (
+
             <MapContainer center={[31.0461, 34.8516]} zoom={6} style={{ height: '100vh', width: '100%' }}>
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -122,7 +136,7 @@ const Map = () => {
                         </Popup>
                     </Marker>
                 ))}
-            </MapContainer>
+            </MapContainer>)}
         </div>
     );
 };

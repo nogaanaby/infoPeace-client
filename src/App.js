@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import React from 'react';
-import { BrowserRouter as Router,Routes, Route, Switch,Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Participants from './Participants'; 
 import Map from './Map'; 
 import SignInForm from './SignInForm';
@@ -24,7 +24,7 @@ function Header() {
                 <Link className="nav-link" to="/">Home</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/about">about</Link>
+                <Link className="nav-link" to="/about">About</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/form">Sign In Form</Link>
@@ -46,9 +46,8 @@ function App() {
         <Route path="/participants" element={<Participants />} />
         <Route path="/about" element={<TXTPage />} />
         <Route path="/form" element={<SignInForm />} />
-        <Route path="/thank-you" component={ThankYou} />
+        <Route path="/thankyou" element={<ThankYou />} />
       </Routes>
-
     </Router>
   );
 }

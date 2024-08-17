@@ -56,7 +56,7 @@ const SignInForm = () => {
   };
 
   const handleSignIn = (participant) => {
-    fetch(env + '/form', {
+    fetch(`${env}/form`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(participant),

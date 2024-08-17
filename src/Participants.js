@@ -4,9 +4,10 @@ import env from './CONSTS.js';
 
 function Participants() {
   const [data,setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(env+"/api")
+        fetch(`${env}/api`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -16,6 +17,7 @@ function Participants() {
             .then(data => {
                 console.log("Fetched participants data:", data);
                 setData(data);
+                setLoading(false);
             })
             .catch(error => console.error('Error fetching participants:', error));
     }, []);
@@ -23,10 +25,17 @@ function Participants() {
 
 
   return (
-    <div className='d-flex vh-100 justify-content-center align-items-center' >
-        <div className='w-50 bg-white rounded p-3'>
+    <div className='d-flex vh-100 justify-content-center align-items-center'>
+      <div className='w-50 bg-white rounded p-3'>
+        {loading ? (
+          <div className="d-flex justify-content-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="sr-only">Loading...</span>
+            </div>
+          </div>
+        ) : (
           <table className='table'>
-          <thead>
+            <thead>
               <tr>
                 <th>Id</th>
                 <th>cond_id</th>
@@ -35,18 +44,19 @@ function Participants() {
               </tr>
             </thead>
             <tbody>
-              {data.map((person,index) => {
-                return <tr key={index}>
+              {data.map((person, index) => (
+                <tr key={index}>
                   <td>{person.per_id}</td>
                   <td>{person.condition_id}</td>
                   <td>{person.country}</td>
                   <td>{person.city}</td>
                   <td>{person.date_of_birth}</td>
                 </tr>
-              })}
+              ))}
             </tbody>
           </table>
-        </div>
+        )}
+      </div>
     </div>
   );
 }

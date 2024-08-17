@@ -1,3 +1,3 @@
 
-const env='https://infopeace-server.onrender.com/'
+const env='https://infopeace-server.onrender.com'
 export default env;

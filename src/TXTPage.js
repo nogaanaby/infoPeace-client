@@ -1,6 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+const i=0
 const TXTPage = () => {
     return (
         <div className="container mt-5">
